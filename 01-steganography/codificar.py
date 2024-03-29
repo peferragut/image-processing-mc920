@@ -7,10 +7,10 @@ def hide_message(img, bin_text):
     
     for row in img:
         for pixel in row:
-            for rgb_color in range(3):
+            for rgb_word in range(3):
                 if bit_idx == data_len:
                     return
-                pixel[rgb_color] = pixel[rgb_color] & ~1 | int(bin_text[bit_idx])
+                pixel[rgb_word] = pixel[rgb_word] & ~1 | int(bin_text[bit_idx])
                 bit_idx += 1
 
 img = cv.imread("01-steganography/imagem_entrada.png")

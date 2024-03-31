@@ -15,8 +15,8 @@ def hide_message(img, bin_text):
                 bit_idx += 1
 
 args = len(sys.argv)
-if args != 3:
-    print("Too many arguments!") if args > 3 else print("Not enough arguments!")
+if args != 4:
+    print("Too many arguments!") if args > 4 else print("Not enough arguments!")
     print("Arguments required: program file, input image and input text file")
     sys.exit()
 
@@ -27,4 +27,4 @@ bin_text = ''.join(format(ord(char), '08b') for char in text)
 
 hide_message(img, bin_text)
 
-cv.imwrite("imagem_saida.png", img)
+cv.imwrite(sys.argv[3], img)

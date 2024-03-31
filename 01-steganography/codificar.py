@@ -1,4 +1,5 @@
 import cv2 as cv
+import sys
 
 def hide_message(img, bin_text):
     bin_text += "00000000"
@@ -13,11 +14,11 @@ def hide_message(img, bin_text):
                 pixel[rgb_word] = pixel[rgb_word] & ~1 | int(bin_text[bit_idx])
                 bit_idx += 1
 
-img = cv.imread("01-steganography/imagem_entrada.png")
+img = cv.imread(sys.argv[1])
 
-text = open("01-steganography/texto_entrada.txt").read()
+text = open(sys.argv[2]).read()
 bin_text = ''.join(format(ord(char), '08b') for char in text)
 
 hide_message(img, bin_text)
 
-cv.imwrite("01-steganography/imagem_saida.png", img)
+cv.imwrite("imagem_saida.png", img)

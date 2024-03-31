@@ -1,4 +1,5 @@
 import cv2 as cv
+import sys
 
 def decode_msg(img):
     curr_word = bin_text = ''
@@ -12,7 +13,7 @@ def decode_msg(img):
                     curr_word = ''
                 curr_word += str(rgb_word & 1)
             
-img = cv.imread("01-steganography/imagem_saida.png")
+img = cv.imread(sys.argv[1])
 decoded_msg = decode_msg(img)
 
 bin_chars = [decoded_msg[i:i + 8] for i in range(0, len(decoded_msg) - 8, 8)]
@@ -22,5 +23,8 @@ for bin_char in bin_chars:
     char = chr(ascii_num)
     text += char
 
-print(text)
+output_file = open(sys.argv[2], 'w')
+output_file.write(text)
+output_file.close()
+
 

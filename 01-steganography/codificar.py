@@ -14,6 +14,12 @@ def hide_message(img, bin_text):
                 pixel[rgb_word] = pixel[rgb_word] & ~1 | int(bin_text[bit_idx])
                 bit_idx += 1
 
+args = len(sys.argv)
+if args != 3:
+    print("Too many arguments!") if args > 3 else print("Not enough arguments!")
+    print("Arguments required: program file, input image and input text file")
+    sys.exit()
+
 img = cv.imread(sys.argv[1])
 
 text = open(sys.argv[2]).read()

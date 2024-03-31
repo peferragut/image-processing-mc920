@@ -12,7 +12,13 @@ def decode_msg(img):
                         return bin_text
                     curr_word = ''
                 curr_word += str(rgb_word & 1)
-            
+
+args = len(sys.argv)
+if args != 3:
+    print("Too many arguments!") if args > 3 else print("Not enough arguments!")
+    print("Arguments required: program file, output image and output text file")
+    sys.exit()
+
 img = cv.imread(sys.argv[1])
 decoded_msg = decode_msg(img)
 

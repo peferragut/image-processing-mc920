@@ -1,36 +1,34 @@
 import cv2 as cv
+import numpy as np
 import sys
 
 def decode_msg(img):
-    curr_word = bin_text = ''
-    for row in img:
-        for pixel in row:
-            for rgb_word in pixel:
-                if len(curr_word) == 8:
-                    bin_text += curr_word
-                    if curr_word == "00000000":
-                        return bin_text
-                    curr_word = ''
-                curr_word += str(rgb_word & 1)
+    width = img.shape[1]
+    height = img.shape[0]
+    img = np.reshape(img, width * height * 3)
+    px_lsb_array = img & 1
+    packed_bits = np.packbits(px_lsb_array)
+
+    null_array = np.where(packed_bits == 0)[0]
+    delimiter_index = null_array[0] if len(null_array) > 0 else len(packed_bits)
+    ascii_array = packed_bits[:delimiter_index]
+
+    decoded_text = ascii_array.tobytes().decode("ascii")
+    return decoded_text
+
 
 args = len(sys.argv)
 if args != 3:
-    print("Too many arguments!") if args > 3 else print("Not enough arguments!")
+    err = "Too many arguments!" if args > 3 else "Not enough arguments!"
+    print(err)
     print("Arguments required: program file, output image and output text file")
     sys.exit()
 
 img = cv.imread(sys.argv[1])
 decoded_msg = decode_msg(img)
 
-bin_chars = [decoded_msg[i:i + 8] for i in range(0, len(decoded_msg) - 8, 8)]
-text = ''
-for bin_char in bin_chars:
-    ascii_num = int(bin_char, 2)
-    char = chr(ascii_num)
-    text += char
-
 output_file = open(sys.argv[2], 'w')
-output_file.write(text)
+output_file.write(decoded_msg)
 output_file.close()
 
 

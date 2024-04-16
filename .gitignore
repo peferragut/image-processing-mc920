@@ -1,0 +1,6 @@
+/.vscode
+
+/01-steganography/other_images
+/01-steganography/*.png
+/01-steganography/*.txt
+

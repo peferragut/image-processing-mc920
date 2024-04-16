@@ -7,12 +7,13 @@ def decode_msg(img, bit_planes):
     height = img.shape[0]
     img = np.reshape(img, width * height * 3)
 
-    num_planes = len(bit_planes)
     extracted_planes = []
-    for plane_idx in range(num_planes):
-        extraction_plane = (img >> bit_planes[plane_idx]) & 1
+
+    for plane in bit_planes:
+        extraction_plane = (img >> plane) & 1
         extracted_planes.append(extraction_plane)
-    extracted_planes = np.array(extracted_planes)[::-1]
+
+    extracted_planes = np.array(extracted_planes)
     bit_planes_img = np.stack(extracted_planes).ravel('F')
     packed_bits = np.packbits(bit_planes_img)
 
@@ -38,6 +39,3 @@ decoded_msg = decode_msg(img, bit_planes)
 output_file = open(sys.argv[3], 'w')
 output_file.write(decoded_msg)
 output_file.close()
-
-
-

@@ -1,6 +1,12 @@
+from skimage.draw import disk
 import cv2 as cv
 import numpy as np
 import sys
+
+def circle(img, radius):
+    center = (len(img) // 2, len(img[1]) // 2)
+    rr, cc = disk(center, radius)
+    return rr, cc
 
 def low_pass():
     pass

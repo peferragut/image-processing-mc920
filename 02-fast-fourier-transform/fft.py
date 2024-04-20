@@ -2,12 +2,13 @@ from skimage.draw import disk
 import cv2 as cv
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
 
 def apply_fft(img):
     f = np.fft.fft2(img)
-    cv.imshow("peppers", img)
     fshift = np.fft.fftshift(f)
-    return f, fshift
+    freq_mag = 20 * np.log(np.abs(fshift))
+    return freq_mag, fshift
 
 
 def inverse_fft(shift_filter):
@@ -80,26 +81,48 @@ if args != 2:
     sys.exit()
     
 img = cv.imread(sys.argv[1], 0)
+
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.hist(img.flatten(), bins=256, range=(0, 255), color='blue', alpha=0.6)
+plt.title('Histogram of Original Image')
+plt.xlabel('Pixel Value')
+plt.ylabel('Frequency')
+
 height = img.shape[0]
 width = img.shape[1]
 
 cutoff = 70
 
 low_pass_filter = low_pass(img, height, width, cutoff)
-cv.imshow("Low pass filter", low_pass_filter)
+cv.imwrite("low_pass_img.png", low_pass_filter)
 
 high_pass_filter = high_pass(img, height, width, cutoff)
-cv.imshow("High pass filter", high_pass_filter)
+cv.imwrite("high_pass_img.png", high_pass_filter)
 
 cutoff_ini = 40
 cutoff_end = 130
 
 band_pass_filter = band_pass(img, height, width, cutoff_ini, cutoff_end)
-cv.imshow("Band pass filter", band_pass_filter)
+cv.imwrite("band_pass_img.png", band_pass_filter)
 
 band_stop_filter = band_stop(img, height, width, cutoff_ini, cutoff_end)
-cv.imshow("Band stop filter", band_stop_filter)
+cv.imwrite("band_stop_img.png", band_stop_filter)
 
-cv.waitKey(0)
-cv.destroyAllWindows()
 
+# Compression
+f = np.fft.fft2(img)
+fshift = np.fft.fftshift(f)
+mag = 20 * np.log(np.abs(fshift))
+compressed_freq = np.where(mag < 260, 0, fshift)
+compressed_img = np.abs(np.fft.ifft2(np.fft.ifftshift(compressed_freq)))
+
+cv.imwrite("compressed_img.png", compressed_img.astype(np.uint8))
+
+plt.subplot(1, 2, 2)
+plt.hist(compressed_img.flatten(), bins=256, range=(0, 255), color='green')
+plt.title('Histogram of Compressed Image')
+plt.xlabel('Pixel Value')
+plt.ylabel('Frequency')
+
+plt.show()

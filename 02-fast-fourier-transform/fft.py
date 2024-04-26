@@ -86,7 +86,7 @@ fshift = np.fft.fftshift(f)
 
 height = img.shape[0]
 width = img.shape[1]
-cutoff = 15
+cutoff = 15 # Change cut-off frequency to low pass and high pass filter here
 
 low_pass_filter = low_pass(fshift.copy(), height, width, cutoff)
 cv.imwrite("low_pass_img.png", low_pass_filter)
@@ -95,8 +95,8 @@ high_pass_filter = high_pass(fshift.copy(), height, width, cutoff)
 cv.imwrite("high_pass_img.png", high_pass_filter)
 
 
-cutoff_ini = 20
-cutoff_end = 100
+cutoff_ini = 20 # Change the interval's initial band value
+cutoff_end = 100 # Change the interval's end band value
 
 band_pass_filter = band_pass(fshift.copy(), height, width, cutoff_ini, cutoff_end)
 cv.imwrite("band_pass_img.png", band_pass_filter)
@@ -106,7 +106,7 @@ cv.imwrite("band_stop_img.png", band_stop_filter)
 
 
 # Compression
-mag = 20 * np.log(np.abs(fshift) + 1)
+mag = 20 * np.log(np.abs(fshift))
 compressed_freq = np.where(mag < 240, 0, fshift)
 compressed_img = np.abs(np.fft.ifft2(np.fft.ifftshift(compressed_freq)))
 cv.imwrite("compressed_img.png", compressed_img.astype(np.uint8))
